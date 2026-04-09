@@ -1,10 +1,11 @@
 import os
+from dotenv import load_dotenv
 
-PROJECT_NAME = "PHISER_AryanVeer"
+load_dotenv()
 
-SECRET_KEY = os.getenv("SECRET_KEY", "supersecretkey")
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_HOURS = 2
+SECRET_KEY = os.getenv("SECRET_KEY")
+ALGORITHM = os.getenv("ALGORITHM", "HS256")
+ACCESS_TOKEN_EXPIRE_HOURS = int(os.getenv("ACCESS_TOKEN_EXPIRE_HOURS", 2))
 
-# Optional rename DB
-DATABASE_URL = "sqlite:///./phiser_aryanveer.db"
+DATABASE_URL = os.getenv("DATABASE_URL")
+FRONTEND_URL = os.getenv("FRONTEND_URL")
