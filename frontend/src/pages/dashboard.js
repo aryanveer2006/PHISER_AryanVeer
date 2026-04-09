@@ -9,7 +9,7 @@ export default function Dashboard() {
         <Navbar />
         <div className="p-6">
           <h1 className="text-3xl font-bold">
-            Welcome to PHISER_AryanVeer 👋
+            Welcome to PHISER_AryanVeer 🚀
           </h1>
         </div>
       </div>
