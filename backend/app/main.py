@@ -2,25 +2,25 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.database import Base, engine
-
-# Import routes
 from app.routes import auth, user, campaign, application, recommendation
 
 app = FastAPI(title="PHISER_AryanVeer API 🚀")
 
-# CORS
+# ✅ CORS (IMPORTANT)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "https://phiser-25v38dnoq-aryanveer2006s-projects.vercel.app"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Create DB tables
+# DB
 Base.metadata.create_all(bind=engine)
 
-# Include routers (ONLY HERE)
+# Routes
 app.include_router(auth.router, prefix="/auth", tags=["Auth"])
 app.include_router(user.router, prefix="/users", tags=["Users"])
 app.include_router(campaign.router, prefix="/campaigns", tags=["Campaigns"])
