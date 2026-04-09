@@ -1,13 +1,10 @@
 import os
-from dotenv import load_dotenv
 
-load_dotenv()
+PROJECT_NAME = "PHISER_AryanVeer"
 
-class Settings:
-    SECRET_KEY = os.getenv("SECRET_KEY", "supersecret")
-    ALGORITHM = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES = 60
+SECRET_KEY = os.getenv("SECRET_KEY", "supersecretkey")
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_HOURS = 2
 
-    DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./collabify.db")
-
-settings = Settings()
+# Optional rename DB
+DATABASE_URL = "sqlite:///./phiser_aryanveer.db"
