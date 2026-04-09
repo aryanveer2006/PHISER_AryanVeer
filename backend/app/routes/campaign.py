@@ -1,46 +1,31 @@
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
+from typing import List
 
-from app.database import Base, engine
+from app.database import get_db
+from app.models.campaign import Campaign
+from app.schemas.campaign import CampaignCreate, CampaignOut
 
-# Import all route files
-from app.routes import auth, user, campaign, application, recommendation
+router = APIRouter()
 
-# Create FastAPI app
-app = FastAPI(
-    title="PHISER_AryanVeer API 🚀",
-    version="1.0.0"
-)
+# Create Campaign
+@router.post("/", response_model=CampaignOut)
+def create_campaign(campaign: CampaignCreate, db: Session = Depends(get_db)):
+    new_campaign = Campaign(**campaign.dict())
+    db.add(new_campaign)
+    db.commit()
+    db.refresh(new_campaign)
+    return new_campaign
 
-# ✅ CORS (IMPORTANT for frontend connection)
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # 🔥 Change to frontend URL in production
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# Get All Campaigns
+@router.get("/", response_model=List[CampaignOut])
+def get_campaigns(db: Session = Depends(get_db)):
+    return db.query(Campaign).all()
 
-# ✅ Create database tables on startup
-Base.metadata.create_all(bind=engine)
-
-# ✅ Include all routes
-app.include_router(auth.router, prefix="/auth", tags=["Auth"])
-app.include_router(user.router, prefix="/users", tags=["Users"])
-app.include_router(campaign.router, prefix="/campaigns", tags=["Campaigns"])
-app.include_router(application.router, prefix="/applications", tags=["Applications"])
-app.include_router(recommendation.router, prefix="/recommend", tags=["AI"])
-
-# ✅ Root route
-@app.get("/")
-def home():
-    return {
-        "message": "PHISER_AryanVeer Backend Running 🚀"
-    }
-
-# ✅ Health check (important for Render)
-@app.get("/health")
-def health_check():
-    return {
-        "status": "ok"
-    }
+# Get Single Campaign
+@router.get("/{campaign_id}", response_model=CampaignOut)
+def get_campaign(campaign_id: int, db: Session = Depends(get_db)):
+    campaign = db.query(Campaign).filter(Campaign.id == campaign_id).first()
+    if not campaign:
+        raise HTTPException(status_code=404, detail="Campaign not found")
+    return campaign
